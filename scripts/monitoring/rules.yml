@@ -1,0 +1,213 @@
+groups:
+  - name: hodoopforge-availability
+    rules:
+      - alert: AmbariCriticalAlert
+        expr: sum(ambari_alerts{state="CRITICAL"}) > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ambari 存在 CRITICAL 告警"
+          description: "CRITICAL 数量 = {{ $value }}；先看 Ambari Alerts 定位组件。"
+
+      - alert: AmbariUnreachable
+        expr: ambari_up == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ambari exporter 无法访问 Ambari"
+          description: "检查 Ambari Server、admin 凭据与 /etc/hodoopforge/ambari.env。"
+
+      - alert: HdfsNoActiveNameNode
+        expr: sum(hdfs_namenode_active) != 1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HDFS 没有唯一的 Active NameNode"
+          description: "当前 active 数量 = {{ $value }}；检查 ZKFC 与两个 NameNode 进程。"
+
+      - alert: HdfsMissingBlocks
+        expr: max(hdfs_missing_blocks) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HDFS 存在缺失块"
+          description: "Missing blocks = {{ $value }}；先不要执行任何删除/均衡操作。"
+
+      - alert: HdfsDatanodeDown
+        expr: max(hdfs_live_datanodes) < 3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HDFS Live DataNode 少于 3"
+          description: "当前 Live DataNode = {{ $value }}；检查容器与 DataNode 进程。"
+
+      - alert: HdfsCheckpointStale
+        expr: time() - max(hdfs_last_checkpoint_timestamp_seconds) > 86400
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HDFS 超过 24 小时未做 checkpoint"
+          description: "检查 Standby NameNode 的 StandbyCheckpointer 与 checkpoint.period。"
+
+      - alert: KafkaBrokerDown
+        expr: kafka_brokers < 3
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kafka broker 少于 3 个"
+          description: "当前 broker 数 = {{ $value }}；检查 kafka-broker.service 与 9092 监听。"
+
+      - alert: KafkaConsumerLagHigh
+        expr: sum(kafka_consumergroup_lag) by (consumergroup) > 10000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kafka 消费组积压"
+          description: "consumergroup={{ $labels.consumergroup }} lag={{ $value }}。"
+
+      - alert: FlinkJobNotRunning
+        expr: flink_job_running == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Flink 没有 RUNNING 作业"
+          description: "检查 JobManager、TaskManager 与 checkpoint；watchdog 会尝试拉起 FLINK。"
+
+      - alert: FlinkUnreachable
+        expr: flink_up == 0
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Flink REST 不可达"
+          description: "检查 172.19.0.2:8081 与 JobManager 进程。"
+
+  - name: hodoopforge-capacity
+    rules:
+      - alert: NodeDiskLow
+        expr: min(node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.25
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "容器根分区可用空间低于 25%"
+          description: "instance={{ $labels.instance }} 可用比例={{ $value | humanizePercentage }}。"
+
+      - alert: NodeMemoryLow
+        expr: min(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.08
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "容器可用内存低于 8%"
+          description: "instance={{ $labels.instance }} 可用比例={{ $value | humanizePercentage }}。"
+
+      - alert: NodeLoadHigh
+        expr: max(node_load1) > 8
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "节点 1 分钟负载持续偏高"
+          description: "instance={{ $labels.instance }} load1={{ $value }}。"
+
+  - name: hodoopforge-management
+    rules:
+      - alert: MgmtAmbariDown
+        expr: mgmt_ambari_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ambari Server 不可达"
+          description: "管理面已失联；watchdog 应执行 start_ambari。"
+
+      - alert: MgmtAgentDown
+        expr: mgmt_agent_up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ambari Agent 进程缺失"
+          description: "host={{ $labels.host }}；检查 ambari-agent.service。"
+
+      - alert: MgmtContainerDown
+        expr: mgmt_container_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HodoopForge 容器未运行"
+          description: "container={{ $labels.name }}；先 docker start，禁止 compose up。"
+
+      - alert: MgmtMysqlReplicaStopped
+        expr: mgmt_mysql_replica_io_running == 0 or mgmt_mysql_replica_sql_running == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL 副本复制线程停止"
+          description: "检查 h3 SHOW REPLICA STATUS 与 Last_Error。"
+
+      - alert: MgmtMysqlReplicaLagHigh
+        expr: mgmt_mysql_replica_lag_seconds > 120
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MySQL 副本延迟超过 120s"
+          description: "lag={{ $value }}s；检查主库写入与网络。"
+
+      - alert: MgmtHiveComponentDown
+        expr: mgmt_hive_hms_up == 0 or mgmt_hive_hs2_up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hive HMS/HS2 实例缺失"
+          description: "host={{ $labels.host }}；检查 Ambari HIVE 组件与端口。"
+
+      - alert: MgmtKdcDown
+        expr: mgmt_kdc_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kerberos KDC 不可达"
+          description: "host={{ $labels.host }}；检查 krb5kdc.service。"
+
+      - alert: MgmtBackupStale
+        expr: time() - mgmt_backup_last_success_timestamp > 129600
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "控制面备份超过 36 小时未更新"
+          description: "检查 hodoopforge-backup.timer 与 /var/log/hodoopforge-backup.log。"
+
+      - alert: MgmtFlinkDuplicateTM
+        expr: mgmt_flink_tm_count > 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "同一节点存在多个 Flink TaskManager"
+          description: "host={{ $labels.host }} count={{ $value }}；保留 pid 文件对应实例，清理多余进程。"
+
+      - alert: MgmtConfigDrift
+        expr: mgmt_config_drift > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "检测到配置漂移"
+          description: "运行 python3 scripts/config_drift_check.py 查看明细并回写仓库。"

@@ -1,0 +1,66 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: qixuandata
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "172.19.0.5:9093"
+            - "172.19.0.3:9093"
+
+rule_files:
+  - /etc/prometheus/rules.yml
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["127.0.0.1:9090"]
+
+  - job_name: node
+    static_configs:
+      - targets:
+          - "172.19.0.2:9100"   # h0
+          - "172.19.0.5:9100"   # h1
+          - "172.19.0.3:9100"   # h2
+          - "172.19.0.4:9100"   # h3
+        labels:
+          layer: node
+
+  - job_name: kafka
+    # Offset collection can take longer than 10s when a broker is slow.
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    static_configs:
+      - targets: ["127.0.0.1:9308"]
+
+  - job_name: hdfs
+    static_configs:
+      - targets: ["127.0.0.1:9401"]
+
+  - job_name: ambari
+    static_configs:
+      - targets: ["127.0.0.1:9402"]
+
+  - job_name: flink
+    static_configs:
+      - targets: ["127.0.0.1:9403"]
+
+  # Flink JM exposes its own Prometheus endpoint on 9249.  TaskManagers do not
+  # currently expose 9249, so only the JM is scraped here; job/TM/checkpoint
+  # state comes from the flink_exporter above.
+  - job_name: flink_metrics
+    static_configs:
+      - targets: ["172.19.0.2:9249"]
+        labels:
+          instance: flink-jm-h0
+      - targets: ["172.19.0.5:9249"]
+        labels:
+          instance: flink-jm-h1
+
+  # Management plane exporter runs on the Docker host (172.19.0.1).
+  - job_name: management
+    static_configs:
+      - targets: ["172.19.0.1:9404"]

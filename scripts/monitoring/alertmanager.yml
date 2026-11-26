@@ -1,0 +1,20 @@
+route:
+  receiver: default
+  group_by: ["alertname", "cluster"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+inhibit_rules:
+  # If the whole node is down, do not also page for every service on it.
+  - source_match:
+      alertname: AmbariUnreachable
+    target_match_re:
+      severity: "warning|critical"
+    equal: ["cluster"]
+
+receivers:
+  - name: default
+    webhook_configs:
+      - url: http://127.0.0.1:9500/alerts
+        send_resolved: true

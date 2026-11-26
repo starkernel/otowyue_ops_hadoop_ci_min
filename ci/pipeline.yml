@@ -1,0 +1,43 @@
+version: '1.0'
+project:
+  name: otowyue_ops_hadoop_ci
+  runtime: python
+  version: '3.11'
+trigger:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  tags: []
+runner:
+  type: linux
+  image: ubuntu-24.04
+  cpu: 2
+  memory: 4Gi
+  timeout: 30m
+stages:
+  - source
+  - build
+  - test
+
+jobs:
+  build:
+    stage: build
+    commands:
+      - python3 -m pip install --no-input -r requirements-dev.txt
+      - python3 -m compileall -q scripts datalake tests
+  test:
+    stage: test
+    needs:
+      - build
+    commands:
+      - python3 -m pytest -q tests/unit
+      - python3 -m pytest -q tests/integration
+
+deploy:
+  enabled: false
+  environment: staging
+  when: branch == "master"
+  commands: []

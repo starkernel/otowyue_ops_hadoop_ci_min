@@ -1,0 +1,154 @@
+name: CI
+
+on:
+  push:
+    branches: ["master", "main"]
+  pull_request:
+    branches: ["master", "main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Unit & static tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Show environment
+        run: |
+          python --version
+          bash --version | head -1
+          pytest --version
+
+      - name: Config drift (static)
+        run: |
+          python scripts/config_drift_check.py --static
+
+      - name: Run tests
+        run: |
+          mkdir -p reports
+          pytest -v \
+            --junitxml=reports/junit.xml \
+            --alluredir=reports/allure-results \
+            --cov=datalake \
+            --cov=opstools \
+            --cov=scripts \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=xml:reports/coverage.xml
+
+      - name: Publish JUnit test report
+        if: always()
+        continue-on-error: true
+        uses: dorny/test-reporter@v2
+        with:
+          name: HodoopForge test results
+          path: reports/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+          fail-on-empty: false
+          list-tests: all
+          list-suites: all
+          max-annotations: 50
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: reports/
+          retention-days: 14
+
+  allure:
+    name: Allure dashboard
+    needs: test
+    if: always() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download test reports
+        uses: actions/download-artifact@v4
+        with:
+          name: test-reports
+          path: reports
+
+      - name: Generate Allure report
+        uses: simple-elf/allure-report-action@v1.15
+        with:
+          allure_results: reports/allure-results
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Upload Allure report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
+
+      # Optional: enable GitHub Pages in repository settings and set the
+      # repository variable ALLURE_PAGES=true to publish the dashboard.
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/master' && vars.ALLURE_PAGES == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+      - name: Deploy Allure dashboard to GitHub Pages
+        if: github.ref == 'refs/heads/master' && vars.ALLURE_PAGES == 'true'
+        uses: actions/deploy-pages@v4
+
+  # Live-cluster checks cannot run on GitHub-hosted runners.  They are kept
+  # here as a manual entry point so the same command is used everywhere.
+  live-smoke:
+    name: Live smoke (manual)
+    if: github.event_name == 'workflow_dispatch' && vars.LIVE_SMOKE == 'true'
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run live integration checks
+        env:
+          HODOOPFORGE_LIVE: "1"
+        run: |
+          python3 -m pip install -r requirements-dev.txt
+          pytest tests/integration -m integration -v --junitxml=reports/live-junit.xml
+
+      - name: Publish live report
+        if: always()
+        continue-on-error: true
+        uses: dorny/test-reporter@v2
+        with:
+          name: Live cluster smoke results
+          path: reports/live-junit.xml
+          reporter: java-junit
+          fail-on-error: false
+          fail-on-empty: false

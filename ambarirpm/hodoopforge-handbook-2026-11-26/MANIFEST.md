@@ -1,0 +1,27 @@
+# MANIFEST · HodoopForge 交接参考包
+
+生成时间：2026-11-26T13:41:26+08:00
+
+| 文件 | 大小 | SHA256 |
+|---|---:|---|
+| `ARCHITECTURE.md` | 12K | `06c6f35f40aa7012386a0243ea0e8e719d4f7c345753f78138eb859b65add53d` |
+| `CURRENT_STATE.md` | 12K | `506ebcc4cfb0e0725e57cd4418d105df1a837fdf7c357bf32513a7d2a8f6de44` |
+| `FLINK_OPS_RUNBOOK.md` | 8.0K | `b00843759e013debe8614e6cdcfbda4dc79227a4b24e311d1c6ae4d8a975e157` |
+| `HIVE_MYSQL_HA.md` | 4.0K | `f975f4406b1b853026c802284f7711b430974a958689dda781ac087c76f69ba7` |
+| `KAFKA_EXTERNAL_ACCESS.md` | 12K | `4efe1a27aad9b3254c43035c32c1fcfb58d5274d92be4a571cf0353ea3ad2727` |
+| `KERBEROS_ENABLEMENT.md` | 12K | `f98656e095ee4d4c25ddcaa2eb9525a06f56717ccd73b71b50e6160072cf6482` |
+| `KERBEROS_GUARD.md` | 8.0K | `c0bc8b43224d4e5949e02617ed8bf648343e5108d9da5fbb06ec391ed3c9b43d` |
+| `lake-map-data.json` | 20K | `8051588e72b75e746ecb284ccb4cc0d3a98be3ba4ef53cb93ffd06a27106820c` |
+| `lake-map.html` | 40K | `59f4fbfdc51234ce95efe698b4f2b3b5b55b4b1924b7789aa440fcf3d6e5e4b9` |
+| `LAN_ACCESS_GUIDE.md` | 20K | `bf9dee9b8c8b98b6aaa23915fa178223225b359dc6e51ca6f5d1dc365516a07b` |
+| `MANAGEMENT_MODEL.md` | 8.0K | `ee4e2b1450936bf2b6bf006e83c1a7cb46a042c3f6a970db0352a9f1c0cdf3df` |
+| `MONITORING_PROMETHEUS.md` | 12K | `873bbe3d41da589593ccca3b18d1a7831daaf19b0a44d680a7e8a426ae1e8083` |
+| `OPERATIONS_AUTOMATION.md` | 8.0K | `37a1e63ca9b53e30816dce5b7e96e14842532079e23102309be9507534652c4f` |
+| `PLATFORM_TECH_USER_MANUAL.md` | 24K | `7709ea6e9daeff54339b55db31303918bc8ee5b7c9b03a6f9a7ce37eeb9c6c2e` |
+| `README.md` | 8.0K | `7bd4b360c57eaae716117ff0b4becb09acd7482d3400f6b9c9d9cac2c2a03aea` |
+| `REBUILD_RUNBOOK.md` | 8.0K | `6cf0b7b86ffec20e9e88da4c631513ecd4135f429b107d92d9136c9bbc54434f` |
+| `scripts/build_lake_map.py` | 4.0K | `4018839c0892ee554da3abb34cf0cbd3bba0a521af3723eb43489589a515b313` |
+| `scripts/gen_lake_map_data.py` | 12K | `58aab0093d2eb0486804312f498530744d70a4052dda61941e8531b2ef4530bf` |
+| `scripts/install_kerberos_guard.sh` | 4.0K | `60f6b1ed9136ddc9d56395a4590303e15143dc23f698b665fd0aedc88fc1e448` |
+| `scripts/kerberos_guard.py` | 24K | `d1b56457d3596dc857d4addd8a39d152b65a378d262ba7167e8f44ea553fe6e8` |
+| `scripts/kerberos_hdfs_enable.sh` | 8.0K | `e515b3219565d12afce3b03a376436054940aa35d561c2883d72b5b7a82a82cf` |

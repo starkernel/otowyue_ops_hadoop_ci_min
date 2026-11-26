@@ -1,0 +1,162 @@
+{
+  "uid": "hodoopforge-overview",
+  "title": "HodoopForge 数据湖总览",
+  "tags": ["hodoopforge", "ha", "prometheus"],
+  "timezone": "browser",
+  "schemaVersion": 37,
+  "version": 1,
+  "refresh": "30s",
+  "editable": true,
+  "time": {"from": "now-6h", "to": "now"},
+  "templating": {"list": []},
+  "annotations": {"list": []},
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "HDFS 已用容量",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0},
+      "targets": [
+        {"refId": "A", "expr": "hdfs_capacity_used_bytes / hdfs_capacity_total_bytes * 100", "instant": true, "legendFormat": "used"}
+      ],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "textMode": "auto"},
+      "fieldConfig": {"defaults": {"unit": "percent", "decimals": 1, "min": 0, "max": 100, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 85}]}}, "overrides": []}
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Active NameNode",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 0},
+      "targets": [
+        {"refId": "A", "expr": "sum(hdfs_namenode_active)", "instant": true, "legendFormat": "active"}
+      ],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "textMode": "auto"},
+      "fieldConfig": {"defaults": {"unit": "none", "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []}
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Kafka Broker",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 4, "w": 4, "x": 8, "y": 0},
+      "targets": [
+        {"refId": "A", "expr": "kafka_brokers", "instant": true, "legendFormat": "brokers"}
+      ],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "textMode": "auto"},
+      "fieldConfig": {"defaults": {"unit": "none", "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 2}, {"color": "green", "value": 3}]}}, "overrides": []}
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Flink 运行作业",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0},
+      "targets": [
+        {"refId": "A", "expr": "flink_job_running", "instant": true, "legendFormat": "running"}
+      ],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "textMode": "auto"},
+      "fieldConfig": {"defaults": {"unit": "none", "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []}
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Ambari CRITICAL 告警",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 4, "w": 4, "x": 16, "y": 0},
+      "targets": [
+        {"refId": "A", "expr": "sum(ambari_alerts{state=\"CRITICAL\"})", "instant": true, "legendFormat": "critical"}
+      ],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "textMode": "auto"},
+      "fieldConfig": {"defaults": {"unit": "none", "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}}, "overrides": []}
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Kafka 消费 Lag 合计",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 4, "w": 4, "x": 20, "y": 0},
+      "targets": [
+        {"refId": "A", "expr": "sum(kafka_consumergroup_lag)", "instant": true, "legendFormat": "lag"}
+      ],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "textMode": "auto"},
+      "fieldConfig": {"defaults": {"unit": "short", "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1000}, {"color": "red", "value": 10000}]}}, "overrides": []}
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "各节点内存可用率",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 4},
+      "targets": [
+        {"refId": "A", "expr": "node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100", "legendFormat": "{{instance}}"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100, "custom": {"lineWidth": 2, "fillOpacity": 8, "showPoints": "never"}}, "overrides": []},
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}}
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "各节点根分区可用率",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 4},
+      "targets": [
+        {"refId": "A", "expr": "node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"} * 100", "legendFormat": "{{instance}}"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100, "custom": {"lineWidth": 2, "fillOpacity": 8, "showPoints": "never"}}, "overrides": []},
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}}
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Kafka 消费组 Lag",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 4},
+      "targets": [
+        {"refId": "A", "expr": "sum(kafka_consumergroup_lag) by (consumergroup)", "legendFormat": "{{consumergroup}}"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "short", "custom": {"lineWidth": 2, "fillOpacity": 10, "showPoints": "never"}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"]}, "tooltip": {"mode": "multi"}}
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "HDFS 容量（已用 / 剩余）",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 12},
+      "targets": [
+        {"refId": "A", "expr": "hdfs_capacity_used_bytes", "legendFormat": "used"},
+        {"refId": "B", "expr": "hdfs_capacity_free_bytes", "legendFormat": "free"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "bytes", "custom": {"lineWidth": 2, "fillOpacity": 12, "showPoints": "never"}}, "overrides": []},
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}}
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "HDFS 缺块 / 副本不足",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 12},
+      "targets": [
+        {"refId": "A", "expr": "hdfs_missing_blocks", "legendFormat": "missing"},
+        {"refId": "B", "expr": "hdfs_under_replicated_blocks", "legendFormat": "under-replicated"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "short", "custom": {"lineWidth": 2, "fillOpacity": 8, "showPoints": "never"}}, "overrides": []},
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}}
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Flink Checkpoint（完成 / 失败）",
+      "datasource": {"type": "prometheus", "uid": "A8UXpaqvz"},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 12},
+      "targets": [
+        {"refId": "A", "expr": "flink_checkpoints_completed", "legendFormat": "completed"},
+        {"refId": "B", "expr": "flink_checkpoints_failed", "legendFormat": "failed"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "short", "custom": {"lineWidth": 2, "fillOpacity": 8, "showPoints": "never"}}, "overrides": []},
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}}
+    }
+  ]
+}

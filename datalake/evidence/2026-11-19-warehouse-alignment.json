@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-11-19T10:08:38",
+  "hdfs_ha": {
+    "active": "bigtop-hostname0.bigtop.apache.org:8020",
+    "standby": "bigtop-hostname3.bigtop.apache.org:8020"
+  },
+  "spark_catalog": {
+    "name": "iceberg",
+    "warehouse": "hdfs://qixuandata/iceberg-warehouse-ha"
+  },
+  "flink": {
+    "warehouse": "hdfs://qixuandata/iceberg-warehouse-ha",
+    "job": "42c0fdb46751781c640b17be70550b9b",
+    "state": "RUNNING"
+  },
+  "alignment": {
+    "old_tables": 77,
+    "new_tables": 77,
+    "aligned": 77,
+    "misaligned": 0
+  },
+  "migrated_missing_tables": [
+    "demo/ads_order_city_daily",
+    "demo/dwd_order_daily",
+    "demo/metrics",
+    "demo/ods_orders",
+    "demo/users",
+    "edulake_knowledge/dws_rag_quality_by_chapter",
+    "edulake_meta/data_product_availability"
+  ],
+  "batch_gap": {
+    "dwd_conversation_messages": {
+      "old": 2564,
+      "new": 2231
+    },
+    "action": "business re-run run_daily_etl.sh 2026-11-18 and 11-09 after catalog switch"
+  },
+  "note": "old /iceberg-warehouse retained as rollback; Flink and Spark now both use -ha"
+}

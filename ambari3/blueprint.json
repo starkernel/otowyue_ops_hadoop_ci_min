@@ -1,0 +1,797 @@
+{
+  "configurations" : [
+    {
+      "tagsync-application-properties" : {
+        "properties" : {
+          "atlas.kafka.bootstrap.servers" : "bigtop-hostname0.bigtop.apache.org:6667",
+          "atlas.kafka.zookeeper.connect" : "bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181,bigtop-hostname0.bigtop.apache.org:2181"
+        }
+      }
+    },
+    {
+      "ranger-hbase-security" : {
+        "properties" : {
+          "ranger.plugin.hbase.policy.rest.url" : "http://bigtop-hostname0.bigtop.apache.org:6080"
+        }
+      }
+    },
+    {
+      "hbase-site" : {
+        "properties" : {
+          "hbase.zookeeper.quorum" : "%HOSTGROUP::host_group_1%,%HOSTGROUP::host_group_3%,%HOSTGROUP::host_group_2%",
+          "hbase.coprocessor.master.classes" : "org.apache.ranger.authorization.hbase.RangerAuthorizationCoprocessor",
+          "hfile.block.cache.size" : "0.4",
+          "hbase.coprocessor.regionserver.classes" : "org.apache.ranger.authorization.hbase.RangerAuthorizationCoprocessor",
+          "hbase.coprocessor.region.classes" : "org.apache.ranger.authorization.hbase.RangerAuthorizationCoprocessor,org.apache.hadoop.hbase.security.access.SecureBulkLoadEndpoint",
+          "hbase.regionserver.handler.count" : "60",
+          "hbase.regionserver.thread.compaction.small" : "3",
+          "hbase.security.authorization" : "true"
+        }
+      }
+    },
+    {
+      "admin-properties" : {
+        "properties" : {
+          "db_host" : "bigtop-hostname0.bigtop.apache.org",
+          "policymgr_external_url" : "http://%HOSTGROUP::host_group_1%:6080"
+        }
+      }
+    },
+    {
+      "ranger-yarn-security" : {
+        "properties" : {
+          "ranger.plugin.yarn.policy.rest.url" : "http://bigtop-hostname0.bigtop.apache.org:6080"
+        }
+      }
+    },
+    {
+      "ranger-yarn-audit" : {
+        "properties" : {
+          "xasecure.audit.destination.solr" : "true",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://%HOSTGROUP::host_group_1%:8020/ranger/audit",
+          "xasecure.audit.destination.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "core-site" : {
+        "properties" : {
+          "fs.defaultFS" : "hdfs://qixuandata",
+          "hadoop.proxyuser.hdfs.groups" : "*",
+          "hadoop.proxyuser.hdfs.hosts" : "*",
+          "hadoop.proxyuser.hcat.hosts" : "%HOSTGROUP::host_group_1%",
+          "hadoop.proxyuser.root.groups" : "*",
+          "hadoop.security.key.provider.path" : "kms://http@%HOSTGROUP::host_group_1%:9292/kms",
+          "ha.zookeeper.quorum" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_2%:2181,%HOSTGROUP::host_group_3%:2181",
+          "hadoop.proxyuser.root.hosts" : "bigtop-hostname0.bigtop.apache.org"
+        }
+      }
+    },
+    {
+      "container-executor" : {
+        "properties" : {
+          "cgroup_root" : "",
+          "yarn_hierarchy" : ""
+        }
+      }
+    },
+    {
+      "hdfs-site" : {
+        "properties" : {
+          "dfs.namenode.https-address.qixuandata.nn1" : "%HOSTGROUP::host_group_1%:50470",
+          "dfs.namenode.shared.edits.dir" : "qjournal://%HOSTGROUP::host_group_4%:8485;%HOSTGROUP::host_group_1%:8485;%HOSTGROUP::host_group_2%:8485/qixuandata",
+          "dfs.internal.nameservices" : "qixuandata",
+          "dfs.namenode.use.datanode.hostname" : "true",
+          "dfs.ha.fencing.methods" : "shell(/bin/true)",
+          "dfs.datanode.du.reserved" : "9390653440",
+          "dfs.nameservices" : "qixuandata",
+          "dfs.datanode.max.transfer.threads" : "16384",
+          "dfs.namenode.handler.count" : "400",
+          "dfs.namenode.http-address.qixuandata.nn1" : "%HOSTGROUP::host_group_1%:50070",
+          "dfs.namenode.http-address.qixuandata.nn2" : "%HOSTGROUP::host_group_4%:50070",
+          "dfs.client.failover.proxy.provider.qixuandata" : "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider",
+          "dfs.client.use.datanode.hostname" : "false",
+          "dfs.encryption.key.provider.uri" : "kms://http@%HOSTGROUP::host_group_1%:9292/kms",
+          "dfs.journalnode.edits.dir" : "/hadoop/hdfs/journal",
+          "dfs.datanode.dns.interface" : "eth0",
+          "dfs.ha.namenodes.qixuandata" : "nn1,nn2",
+          "dfs.namenode.safemode.threshold-pct" : "0.99f",
+          "dfs.namenode.inode.attributes.provider.class" : "org.apache.ranger.authorization.hadoop.RangerHdfsAuthorizer",
+          "dfs.namenode.https-address.qixuandata.nn2" : "%HOSTGROUP::host_group_4%:50470",
+          "dfs.namenode.rpc-address.qixuandata.nn1" : "%HOSTGROUP::host_group_1%:8020",
+          "dfs.namenode.rpc-address.qixuandata.nn2" : "%HOSTGROUP::host_group_4%:8020",
+          "dfs.ha.automatic-failover.enabled" : "true"
+        }
+      }
+    },
+    {
+      "kafka-broker" : {
+        "properties" : {
+          "listeners" : "PLAINTEXT://bigtop-hostname0.bigtop.apache.org:9092",
+          "transaction.state.log.replication.factor" : "3",
+          "zookeeper.connect" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_3%:2181,%HOSTGROUP::host_group_2%:2181",
+          "min.insync.replicas" : "2",
+          "default.replication.factor" : "3",
+          "advertised.listeners" : "PLAINTEXT://192.168.0.60:9092",
+          "transaction.state.log.min.isr" : "2",
+          "unclean.leader.election.enable" : "false"
+        }
+      }
+    },
+    {
+      "yarn-site" : {
+        "properties" : {
+          "yarn.resourcemanager.zk-address" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_3%:2181,%HOSTGROUP::host_group_2%:2181",
+          "yarn.log.server.url" : "http://%HOSTGROUP::host_group_1%:19888/jobhistory/logs",
+          "yarn.nodemanager.resource-plugins.gpu.docker-plugin.nvidiadocker-v1.endpoint" : "",
+          "yarn.resourcemanager.address" : "%HOSTGROUP::host_group_1%:8050",
+          "yarn.log.server.web-service.url" : "http://%HOSTGROUP::host_group_2%:8188/ws/v1/applicationhistory",
+          "yarn.timeline-service.reader.webapp.address" : "%HOSTGROUP::host_group_1%:8198",
+          "hadoop.registry.zk.quorum" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_3%:2181,%HOSTGROUP::host_group_2%:2181",
+          "yarn.nodemanager.resource-plugins.gpu.docker-plugin" : "",
+          "yarn.resourcemanager.admin.address" : "%HOSTGROUP::host_group_1%:8141",
+          "yarn.resourcemanager.resource-tracker.address" : "%HOSTGROUP::host_group_1%:8025",
+          "yarn.timeline-service.reader.webapp.https.address" : "%HOSTGROUP::host_group_1%:8199",
+          "yarn.resourcemanager.webapp.address" : "%HOSTGROUP::host_group_1%:8088",
+          "yarn.acl.enable" : "true",
+          "yarn.nodemanager.resource.memory-mb" : "6144",
+          "yarn.scheduler.maximum-allocation-vcores" : "6",
+          "yarn.resourcemanager.hostname" : "%HOSTGROUP::host_group_1%",
+          "yarn.resourcemanager.monitor.capacity.preemption.total_preemption_per_round" : "0.25",
+          "yarn.timeline-service.address" : "%HOSTGROUP::host_group_2%:10200",
+          "yarn.timeline-service.entity-group-fs-store.app-cache-size" : "10",
+          "yarn.timeline-service.webapp.address" : "%HOSTGROUP::host_group_2%:8188",
+          "yarn.scheduler.minimum-allocation-mb" : "1024",
+          "yarn.nodemanager.resource.cpu-vcores" : "6",
+          "yarn.timeline-service.leveldb-timeline-store.path" : "/var/log/hadoop-yarn/timeline",
+          "yarn.scheduler.maximum-allocation-mb" : "6144",
+          "yarn.timeline-service.http-authentication.proxyuser.root.hosts" : "bigtop-hostname0.bigtop.apache.org",
+          "yarn.resourcemanager.webapp.https.address" : "%HOSTGROUP::host_group_1%:8090",
+          "yarn.timeline-service.webapp.https.address" : "%HOSTGROUP::host_group_2%:8190",
+          "yarn.resourcemanager.scheduler.address" : "%HOSTGROUP::host_group_1%:8030",
+          "yarn.timeline-service.http-authentication.proxyuser.root.groups" : "*",
+          "yarn.nodemanager.resource-plugins.gpu.allowed-gpu-devices" : "",
+          "yarn.authorization-provider" : "org.apache.ranger.authorization.yarn.authorizer.RangerYarnAuthorizer"
+        }
+      }
+    },
+    {
+      "hiveserver2-site" : {
+        "properties" : {
+          "hive.security.authorization.manager" : "org.apache.ranger.authorization.hive.authorizer.RangerHiveAuthorizerFactory",
+          "hive.security.authorization.enabled" : "true",
+          "hive.conf.restricted.list" : "hive.security.authenticator.manager,hive.security.authorization.manager,hive.security.metastore.authorization.manager,hive.security.metastore.authenticator.manager,hive.users.in.admin.role,hive.server2.xsrf.filter.enabled,hive.security.authorization.enabled"
+        }
+      }
+    },
+    {
+      "ranger-yarn-plugin-properties" : {
+        "properties" : {
+          "ranger-yarn-plugin-enabled" : "Yes"
+        }
+      }
+    },
+    {
+      "yarn-env" : {
+        "properties" : {
+          "apptimelineserver_heapsize" : "512",
+          "resourcemanager_heapsize" : "1536"
+        }
+      }
+    },
+    {
+      "ranger-hdfs-audit" : {
+        "properties" : {
+          "xasecure.audit.destination.solr" : "true",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://qixuandata/ranger/audit",
+          "xasecure.audit.destination.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "ranger-hdfs-plugin-properties" : {
+        "properties" : {
+          "REPOSITORY_CONFIG_USERNAME" : "hdfs",
+          "ranger-hdfs-plugin-enabled" : "Yes"
+        }
+      }
+    },
+    {
+      "infra-solr-env" : {
+        "properties" : {
+          "infra_solr_maxmem" : "1024",
+          "infra_solr_minmem" : "512"
+        }
+      }
+    },
+    {
+      "resource-types" : {
+        "properties" : {
+          "yarn.resource-types.yarn.io_gpu.maximum-allocation" : "4"
+        }
+      }
+    },
+    {
+      "ranger-kafka-audit" : {
+        "properties" : {
+          "xasecure.audit.destination.solr" : "true",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://%HOSTGROUP::host_group_1%:8020/ranger/audit",
+          "xasecure.audit.destination.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "hbase-env" : {
+        "properties" : {
+          "hbase_regionserver_heapsize" : "2048",
+          "hbase_master_heapsize" : "1024"
+        }
+      }
+    },
+    {
+      "mapred-site" : {
+        "properties" : {
+          "mapreduce.task.io.sort.mb" : "1027",
+          "mapreduce.map.memory.mb" : "3072",
+          "mapred.local.dir" : "/hadoop/mapred",
+          "yarn.app.mapreduce.am.command-opts" : "-Xmx2457m",
+          "mapreduce.jobhistory.webapp.address" : "%HOSTGROUP::host_group_1%:19888",
+          "mapreduce.reduce.memory.mb" : "3072",
+          "mapreduce.map.java.opts" : "-Xmx2457m",
+          "mapreduce.jobhistory.address" : "%HOSTGROUP::host_group_1%:10020",
+          "mapreduce.reduce.java.opts" : "-Xmx2457m",
+          "yarn.app.mapreduce.am.resource.mb" : "3072"
+        }
+      }
+    },
+    {
+      "ranger-admin-site" : {
+        "properties" : {
+          "ranger.jpa.jdbc.url" : "jdbc:mysql://bigtop-hostname0.bigtop.apache.org:3306/ranger",
+          "ranger.kms.service.user.hdfs" : "hdfs",
+          "ranger.kms.service.user.hive" : "hive",
+          "ranger.audit.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "ranger-env" : {
+        "properties" : {
+          "ranger-yarn-plugin-enabled" : "Yes",
+          "ranger_tagsync_max_heap_size" : "512m",
+          "is_solrCloud_enabled" : "true",
+          "ranger-hive-plugin-enabled" : "Yes",
+          "ranger_usersync_max_heap_size" : "512m",
+          "ranger-hbase-plugin-enabled" : "Yes",
+          "ranger-hdfs-plugin-enabled" : "Yes",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://%HOSTGROUP::host_group_1%:8020/ranger/audit",
+          "ranger_admin_max_heap_size" : "768m",
+          "ranger_privelege_user_jdbc_url" : "jdbc:mysql://bigtop-hostname0.bigtop.apache.org:3306"
+        }
+      }
+    },
+    {
+      "kms-site" : {
+        "properties" : {
+          "hadoop.kms.proxyuser.yarn.hosts" : "*",
+          "hadoop.kms.proxyuser.yarn.groups" : "*",
+          "hadoop.kms.proxyuser.yarn.users" : "*"
+        }
+      }
+    },
+    {
+      "kms-env" : {
+        "properties" : {
+          "ranger_kms_max_heap_size" : "512m",
+          "ranger_kms_privelege_user_jdbc_url" : "jdbc:mysql://bigtop-hostname0.bigtop.apache.org:3306"
+        }
+      }
+    },
+    {
+      "hive-site" : {
+        "properties" : {
+          "hive.tez.container.size" : "3840",
+          "hive.users.in.admin.role" : "hive",
+          "hive.cluster.delegation.token.store.zookeeper.connectString" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_3%:2181,%HOSTGROUP::host_group_2%:2181",
+          "hive.metastore.uris" : "thrift://%HOSTGROUP::host_group_1%:9083,thrift://%HOSTGROUP::host_group_2%:9083",
+          "javax.jdo.option.ConnectionURL" : "jdbc:mysql://bigtop-hostname0.bigtop.apache.org/hive",
+          "hive.stats.fetch.column.stats" : "true",
+          "hive.compactor.worker.threads" : "2",
+          "hive.limit.optimize.enable" : "true",
+          "hive.server2.enable.doAs" : "false",
+          "hive.metastore.event.db.notification.api.auth" : "false",
+          "hive.zookeeper.quorum" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_3%:2181,%HOSTGROUP::host_group_2%:2181",
+          "hive.metastore.metrics.enabled" : "false",
+          "hive.auto.convert.join.noconditionaltask.size" : "1073741824"
+        }
+      }
+    },
+    {
+      "ranger-kms-audit" : {
+        "properties" : {
+          "xasecure.audit.destination.solr.urls" : "",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://bigtop-hostname0.bigtop.apache.org:8020/ranger/audit",
+          "xasecure.audit.destination.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "tez-site" : {
+        "properties" : {
+          "tez.session.am.dag.submit.timeout.secs" : "600",
+          "tez.task.resource.memory.mb" : "3840",
+          "tez.history.logging.service.class" : "org.apache.tez.dag.history.logging.proto.ProtoHistoryLoggingService",
+          "tez.history.logging.proto-base-dir" : "/warehouse/tablespace/external/hive/sys.db",
+          "tez.queue.name" : "default",
+          "tez.am.resource.memory.mb" : "4096",
+          "tez.runtime.unordered.output.buffer.size-mb" : "288",
+          "tez.am.java.opts" : "-server -Xmx3276m -Djava.net.preferIPv4Stack=true",
+          "tez.runtime.io.sort.mb" : "1081"
+        }
+      }
+    },
+    {
+      "dbks-site" : {
+        "properties" : {
+          "ranger.ks.jpa.jdbc.url" : "jdbc:mysql://bigtop-hostname0.bigtop.apache.org:3306/rangerkms"
+        }
+      }
+    },
+    {
+      "webhcat-site" : {
+        "properties" : {
+          "templeton.hive.properties" : "hive.metastore.local=false,hive.metastore.uris=thrift://bigtop-hostname0.bigtop.apache.org:9083,hive.metastore.sasl.enabled=false,hive.metastore.execute.setugi=true",
+          "templeton.zookeeper.hosts" : "%HOSTGROUP::host_group_1%:2181,%HOSTGROUP::host_group_3%:2181,%HOSTGROUP::host_group_2%:2181"
+        }
+      }
+    },
+    {
+      "flink-conf" : {
+        "properties" : {
+          "taskmanager.memory.process.size" : "2048m",
+          "jobmanager.bind-host" : "0.0.0.0",
+          "taskmanager.bind-host" : "0.0.0.0",
+          "table.local-time-zone" : "Asia/Shanghai",
+          "jobmanager.rpc.address" : "bigtop-hostname0.bigtop.apache.org",
+          "taskmanager.numberOfTaskSlots" : "8",
+          "content" : "\n################################################################################\n#  Licensed to the Apache Software Foundation (ASF) under one\n#  or more contributor license agreements.  See the NOTICE file\n#  distributed with this work for additional information\n#  regarding copyright ownership.  The ASF licenses this file\n#  to you under the Apache License, Version 2.0 (the\n#  \"License\"); you may not use this file except in compliance\n#  with the License.  You may obtain a copy of the License at\n#\n#      http://www.apache.org/licenses/LICENSE-2.0\n#\n#  Unless required by applicable law or agreed to in writing, software\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n#  See the License for the specific language governing permissions and\n# limitations under the License.\n################################################################################\n\n\n#==============================================================================\n# Common\n#==============================================================================\n\n# The external address of the host on which the JobManager runs and can be\n# reached by the TaskManagers and any clients which want to connect. This setting\n# is only used in Standalone mode and may be overwritten on the JobManager side\n# by specifying the --host hostname parameter of the bin/jobmanager.sh executable.\n# In high availability mode, if you use the bin/start-cluster.sh script and setup\n# the conf/masters file, this will be taken care of automatically. Yarn\n# automatically configure the host name based on the hostname of the node where the\n# JobManager runs.\n\njobmanager.rpc.address: bigtop-hostname0.bigtop.apache.org\n\n# The RPC port where the JobManager is reachable.\n\njobmanager.rpc.port: 6123\n\n# The host interface the JobManager will bind to. My default, this is localhost, and will prevent\n# the JobManager from communicating outside the machine/container it is running on.\n# On YARN this setting will be ignored if it is set to 'localhost', defaulting to 0.0.0.0.\n# On Kubernetes this setting will be ignored, defaulting to 0.0.0.0.\n#\n# To enable this, set the bind-host address to one that has access to an outside facing network\n# interface, such as 0.0.0.0.\n\njobmanager.bind-host: 0.0.0.0\n\n\n# The total process memory size for the JobManager.\n#\n# Note this accounts for all memory usage within the JobManager process, including JVM metaspace and other overhead.\n\njobmanager.memory.process.size: 1024m\n\n# The host interface the TaskManager will bind to. By default, this is localhost, and will prevent\n# the TaskManager from communicating outside the machine/container it is running on.\n# On YARN this setting will be ignored if it is set to 'localhost', defaulting to 0.0.0.0.\n# On Kubernetes this setting will be ignored, defaulting to 0.0.0.0.\n#\n# To enable this, set the bind-host address to one that has access to an outside facing network\n# interface, such as 0.0.0.0.\n\ntaskmanager.bind-host: 0.0.0.0\n\n# The address of the host on which the TaskManager runs and can be reached by the JobManager and\n# other TaskManagers. If not specified, the TaskManager will try different strategies to identify\n# the address.\n#\n# Note this address needs to be reachable by the JobManager and forward traffic to one of\n# the interfaces the TaskManager is bound to (see 'taskmanager.bind-host').\n#\n# Note also that unless all TaskManagers are running on the same machine, this address needs to be\n# configured separately for each TaskManager.\n\n# taskmanager.host removed for multi-node deployment (T: platform)\n\n# The total process memory size for the TaskManager.\n#\n# Note this accounts for all memory usage within the TaskManager process, including JVM metaspace and other overhead.\n\ntaskmanager.memory.process.size: 2048m\n\n# To exclude JVM metaspace and overhead, please, use total Flink memory size instead of 'taskmanager.memory.process.size'.\n# It is not recommended to set both 'taskmanager.memory.process.size' and Flink memory.\n#\n# taskmanager.memory.flink.size: 1280m\n\n# The number of task slots that each TaskManager offers. Each slot runs one parallel pipeline.\n\ntaskmanager.numberOfTaskSlots: 8\n\n# The parallelism used for programs that did not specify and other parallelism.\n\ntable.local-time-zone: Asia/Shanghai\nparallelism.default: 2\n\n# The default file system scheme and authority.\n#\n# By default file paths without scheme are interpreted relative to the local\n# root file system 'file:///'. Use this to override the default and interpret\n# relative paths relative to a different file system,\n# for example 'hdfs://mynamenode:12345'\n#\n# fs.default-scheme\n\n#==============================================================================\n# JVM and Logging Options\n#==============================================================================\n#Java runtime to use\nenv.java.home: {{java_home}}\n\n#Path to hadoop configuration directory. It is required to read HDFS and/or YARN configuration.\n#You can also set it via environment variable.\nenv.hadoop.conf.dir: {{hadoop_conf_dir}}\n\n#Defines the directory where the flink-<host>-<process>.pid files are saved.\nenv.pid.dir: {{flink_pid_dir}}\n\n#Defines the directory where the Flink logs are saved.\nenv.log.dir: {{flink_log_dir}}\n\n#==============================================================================\n# High Availability\n#==============================================================================\n\n# The high-availability mode. Possible options are 'NONE' or 'zookeeper'.\n#\nhigh-availability.type: zookeeper\nhigh-availability.storageDir: hdfs://qixuandata/flink/ha\nhigh-availability.zookeeper.quorum: bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181\nhigh-availability.zookeeper.path.root: /flink\nhigh-availability.cluster-id: /hodoopforge\n\n# The path where metadata for master recovery is persisted. While ZooKeeper stores\n# the small ground truth for checkpoint and leader election, this location stores\n# the larger objects, like persisted dataflow graphs.\n#\n# Must be a durable file system that is accessible from all nodes\n# (like HDFS, S3, Ceph, nfs, ...)\n#\n# high-availability.storageDir: hdfs:///flink/ha/\n\n# The list of ZooKeeper quorum peers that coordinate the high-availability\n# setup. This must be a list of the form:\n# \"host1:clientPort,host2:clientPort,...\" (default clientPort: 2181)\n#\n# high-availability.zookeeper.quorum: localhost:2181\n\n\n# ACL options are based on https://zookeeper.apache.org/doc/r3.1.2/zookeeperProgrammers.html#sc_BuiltinACLSchemes\n# It can be either \"creator\" (ZOO_CREATE_ALL_ACL) or \"open\" (ZOO_OPEN_ACL_UNSAFE)\n# The default value is \"open\" and it can be changed to \"creator\" if ZK security is enabled\n#\n# high-availability.zookeeper.client.acl: open\n\n#==============================================================================\n# Fault tolerance and checkpointing\n#==============================================================================\n\n# The backend that will be used to store operator state checkpoints if\n# checkpointing is enabled. Checkpointing is enabled when execution.checkpointing.interval > 0.\n#\n# Execution checkpointing related parameters. Please refer to CheckpointConfig and ExecutionCheckpointingOptions for more details.\n#\n# execution.checkpointing.interval: 3min\n# execution.checkpointing.externalized-checkpoint-retention: [DELETE_ON_CANCELLATION, RETAIN_ON_CANCELLATION]\n# execution.checkpointing.max-concurrent-checkpoints: 1\n# execution.checkpointing.min-pause: 0\n# execution.checkpointing.mode: [EXACTLY_ONCE, AT_LEAST_ONCE]\n# execution.checkpointing.timeout: 10min\n# execution.checkpointing.tolerable-failed-checkpoints: 0\n# execution.checkpointing.unaligned: false\n#\n# Supported backends are 'hashmap', 'rocksdb', or the\n# <class-name-of-factory>.\n#\n# state.backend: hashmap\n\n# Directory for checkpoints filesystem, when using any of the default bundled\n# state backends.\n#\n# state.checkpoints.dir: hdfs://namenode-host:port/flink-checkpoints\n\n# Default target directory for savepoints, optional.\n#\n# state.savepoints.dir: hdfs://namenode-host:port/flink-savepoints\n\n# Flag to enable/disable incremental checkpoints for backends that\n# support incremental checkpoints (like the RocksDB state backend).\n#\n# state.backend.incremental: false\n\n# The failover strategy, i.e., how the job computation recovers from task failures.\n# Only restart tasks that may have been affected by the task failure, which typically includes\n# downstream tasks and potentially upstream tasks if their produced data is no longer available for consumption.\n\njobmanager.execution.failover-strategy: region\n\n#==============================================================================\n# REST & web frontend\n#==============================================================================\n\n# The port to which the REST client connects to. If rest.bind-port has\n# not been specified, then the server will bind to this port as well.\n#\n#rest.port: 8081\n\n# The address to which the REST client will connect to\n#\nrest.address: localhost\n\n# Port range for the REST and web server to bind to.\n#\n#rest.bind-port: 8080-8090\n\n# The address that the REST & web server binds to\n# By default, this is localhost, which prevents the REST & web server from\n# being able to communicate outside of the machine/container it is running on.\n#\n# To enable this, set the bind address to one that has access to outside-facing\n# network interface, such as 0.0.0.0.\n#\nrest.bind-address: 0.0.0.0\n\n# Flag to specify whether job submission is enabled from the web-based\n# runtime monitor. Uncomment to disable.\n\n#web.submit.enable: false\n\n# Flag to specify whether job cancellation is enabled from the web-based\n# runtime monitor. Uncomment to disable.\n\n#web.cancel.enable: false\n\n#==============================================================================\n# Advanced\n#==============================================================================\n\n# Override the directories for temporary files. If not specified, the\n# system-specific Java temporary directory (java.io.tmpdir property) is taken.\n#\n# For framework setups on Yarn, Flink will automatically pick up the\n# containers' temp directories without any need for configuration.\n#\n# Add a delimited list for multiple directories, using the system directory\n# delimiter (colon ':' on unix) or a comma, e.g.:\n#     /data1/tmp:/data2/tmp:/data3/tmp\n#\n# Note: Each directory entry is read from and written to by a different I/O\n# thread. You can include the same directory multiple times in order to create\n# multiple I/O threads against that directory. This is for example relevant for\n# high-throughput RAIDs.\n#\n# io.tmp.dirs: /tmp\n\n# The classloading resolve order. Possible values are 'child-first' (Flink's default)\n# and 'parent-first' (Java's default).\n#\n# Child first classloading allows users to use different dependency/library\n# versions in their application than those in the classpath. Switching back\n# to 'parent-first' may help with debugging dependency issues.\n#\n# classloader.resolve-order: child-first\n\n# The amount of memory going to the network stack. These numbers usually need\n# no tuning. Adjusting them may be necessary in case of an \"Insufficient number\n# of network buffers\" error. The default min is 64MB, the default max is 1GB.\n#\n# taskmanager.memory.network.fraction: 0.1\n# taskmanager.memory.network.min: 64mb\n# taskmanager.memory.network.max: 1gb\n\n#==============================================================================\n# Flink Cluster Security Configuration\n#==============================================================================\n\n# Kerberos authentication for various components - Hadoop, ZooKeeper, and connectors -\n# may be enabled in four steps:\n# 1. configure the local krb5.conf file\n# 2. provide Kerberos credentials (either a keytab or a ticket cache w/ kinit)\n# 3. make the credentials available to various JAAS login contexts\n# 4. configure the connector to use JAAS/SASL\n\n# The below configure how Kerberos credentials are provided. A keytab will be used instead of\n# a ticket cache if the keytab path and principal are set.\n\n{% if security_enabled %}\nsecurity.kerberos.login.use-ticket-cache: true\nsecurity.kerberos.login.keytab: {{security_kerberos_login_keytab}}\nsecurity.kerberos.login.principal: {{security_kerberos_login_principal}}\n{% else %}\n# security.kerberos.login.use-ticket-cache: true\n# security.kerberos.login.keytab: /path/to/kerberos/keytab\n# security.kerberos.login.principal: flink-user\n{% endif %}\n# The configuration below defines which JAAS login contexts\n\n# security.kerberos.login.contexts: Client,KafkaClient\n\n#==============================================================================\n# ZK Security Configuration\n#==============================================================================\n\n# Below configurations are applicable if ZK ensemble is configured for security\n\n# Override below configuration to provide custom ZK service name if configured\n# zookeeper.sasl.service-name: zookeeper\n\n# The configuration below must match one of the values set in \"security.kerberos.login.contexts\"\n# zookeeper.sasl.login-context-name: Client\n\n#==============================================================================\n# HistoryServer\n#==============================================================================\n\n# The HistoryServer is started and stopped via bin/historyserver.sh (start|stop)\n\n# Directory to upload completed jobs to. Add this directory to the list of\n# monitored directories of the HistoryServer as well (see below).\n\n# Prometheus reporter (added by HodoopForge; survives Ambari regeneration)\nmetrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory\nmetrics.reporter.prom.port: 9249\nmetrics.reporter.prom.filter.label.includes: host,job_name,task_name\n\njobmanager.archive.fs.dir: {{jobmanager_archive_fs_dir}}\n\n# The address under which the web-based HistoryServer listens.\n#historyserver.web.address: 0.0.0.0\n\n# The port under which the web-based HistoryServer listens.\nhistoryserver.web.port: {{historyserver_web_port}}\n\n# Comma separated list of directories to monitor for completed jobs.\nhistoryserver.archive.fs.dir: {{historyserver_archive_fs_dir}}\n\n# Interval in milliseconds for refreshing the monitored directories.\nhistoryserver.archive.fs.refresh-interval: {{historyserver_archive_fs_refresh_interval}}\nenv.java.opts: --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED\nenv.java.opts.jobmanager: --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED\nenv.java.opts.taskmanager: --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED",
+          "jobmanager.rpc.bind-address" : "0.0.0.0",
+          "rest.bind-address" : "0.0.0.0"
+        }
+      }
+    },
+    {
+      "ranger-kms-security" : {
+        "properties" : {
+          "ranger.plugin.kms.policy.rest.url" : "http://bigtop-hostname0.bigtop.apache.org:6080"
+        }
+      }
+    },
+    {
+      "hivemetastore-site" : {
+        "properties" : {
+          "hive.metastore.metrics.enabled" : "false",
+          "hive.service.metrics.reporter" : "JMX"
+        }
+      }
+    },
+    {
+      "kms-properties" : {
+        "properties" : {
+          "db_host" : "bigtop-hostname0.bigtop.apache.org"
+        }
+      }
+    },
+    {
+      "ranger-hbase-audit" : {
+        "properties" : {
+          "xasecure.audit.destination.solr" : "true",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://%HOSTGROUP::host_group_1%:8020/ranger/audit",
+          "xasecure.audit.destination.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "ranger-kafka-plugin-properties" : {
+        "properties" : {
+          "zookeeper.connect" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181"
+        }
+      }
+    },
+    {
+      "ranger-hbase-plugin-properties" : {
+        "properties" : {
+          "ranger-hbase-plugin-enabled" : "Yes"
+        }
+      }
+    },
+    {
+      "ranger-hdfs-security" : {
+        "properties" : {
+          "ranger.plugin.hdfs.policy.rest.url" : "http://bigtop-hostname0.bigtop.apache.org:6080"
+        }
+      }
+    },
+    {
+      "hadoop-env" : {
+        "properties" : {
+          "dtnode_heapsize" : "512",
+          "namenode_opt_newsize" : "128",
+          "namenode_heapsize" : "1536",
+          "namenode_opt_maxnewsize" : "128"
+        }
+      }
+    },
+    {
+      "yarn-hbase-env" : {
+        "properties" : {
+          "use_external_hbase" : "true"
+        }
+      }
+    },
+    {
+      "yarn-hbase-site" : {
+        "properties" : {
+          "hfile.block.cache.size" : "0.4"
+        }
+      }
+    },
+    {
+      "zookeeper-env" : {
+        "properties" : {
+          "zk_server_heapsize" : "512"
+        }
+      }
+    },
+    {
+      "mapred-env" : {
+        "properties" : {
+          "jobhistory_heapsize" : "512"
+        }
+      }
+    },
+    {
+      "ranger-kafka-security" : {
+        "properties" : {
+          "ranger.plugin.kafka.policy.rest.url" : "http://bigtop-hostname0.bigtop.apache.org:6080"
+        }
+      }
+    },
+    {
+      "cluster-env" : {
+        "properties" : {
+          "stack_root" : "{\"BIGTOP\": \"/usr/bigtop\"}",
+          "stack_name" : "BIGTOP"
+        }
+      }
+    },
+    {
+      "hive-env" : {
+        "properties" : {
+          "hive_security_authorization" : "Ranger",
+          "hive_database" : "Existing MySQL / MariaDB Database",
+          "hive.metastore.heapsize" : "512",
+          "hive.heapsize" : "1024"
+        }
+      }
+    },
+    {
+      "ranger-hive-audit" : {
+        "properties" : {
+          "xasecure.audit.destination.solr" : "true",
+          "xasecure.audit.destination.hdfs.dir" : "hdfs://%HOSTGROUP::host_group_1%:8020/ranger/audit",
+          "xasecure.audit.destination.solr.zookeepers" : "bigtop-hostname0.bigtop.apache.org:2181,bigtop-hostname1.bigtop.apache.org:2181,bigtop-hostname2.bigtop.apache.org:2181/infra-solr"
+        }
+      }
+    },
+    {
+      "spark-env" : {
+        "properties" : {
+          "content" : "\n#!/usr/bin/env bash\n\n# This file is sourced when running various Spark programs.\n# Copy it as spark-env.sh and edit that to configure Spark for your site.\n\n# Options read in YARN client mode\n#SPARK_EXECUTOR_INSTANCES=\"2\" #Number of workers to start (Default: 2)\n#SPARK_EXECUTOR_CORES=\"1\" #Number of cores for the workers (Default: 1).\n#SPARK_EXECUTOR_MEMORY=\"1G\" #Memory per Worker (e.g. 1000M, 2G) (Default: 1G)\n#SPARK_DRIVER_MEMORY=\"512M\" #Memory for Master (e.g. 1000M, 2G) (Default: 512 Mb)\n#SPARK_YARN_APP_NAME=\"spark\" #The name of your application (Default: Spark)\n#SPARK_YARN_QUEUE=\"default\" #The hadoop queue to use for allocation requests (Default: default)\n#SPARK_YARN_DIST_FILES=\"\" #Comma separated list of files to be distributed with the job.\n#SPARK_YARN_DIST_ARCHIVES=\"\" #Comma separated list of archives to be distributed with the job.\n\n{% if security_enabled %}\nexport SPARK_HISTORY_OPTS='-Dspark.ui.filters=org.apache.hadoop.security.authentication.server.AuthenticationFilter -Dspark.org.apache.hadoop.security.authentication.server.AuthenticationFilter.params=\"type=kerberos,kerberos.principal={{spnego_principal}},kerberos.keytab={{spnego_keytab}}\"'\n{% endif %}\n\n\n# Generic options for the daemons used in the standalone deploy mode\n\n# Alternate conf dir. (Default: ${SPARK_HOME}/conf)\nexport SPARK_CONF_DIR=${SPARK_CONF_DIR:-{{spark_home}}/conf}\n\n# Where log files are stored.(Default:${SPARK_HOME}/logs)\n#export SPARK_LOG_DIR=${SPARK_HOME:-{{spark_home}}}/logs\nexport SPARK_LOG_DIR={{spark_log_dir}}\n\n# Where the pid file is stored. (Default: /tmp)\nexport SPARK_PID_DIR={{spark_pid_dir}}\n\n#Memory for Master, Worker and history server (default: 1024MB)\nexport SPARK_DAEMON_MEMORY={{spark_daemon_memory}}m\n\n# A string representing this instance of spark.(Default: $USER)\nSPARK_IDENT_STRING=$USER\n\n# The scheduling priority for daemons. (Default: 0)\nSPARK_NICENESS=0\n\nexport HADOOP_HOME=${HADOOP_HOME:-{{hadoop_home}}}\nexport HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-{{hadoop_conf_dir}}}\n\nexport SPARK_DIST_CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath)\n\n# The java implementation to use.\nexport JAVA_HOME=/usr/lib/jvm/java-17-openjdk\n\n# Add hadoop native libraries support for better performance\nexport LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH",
+          "spark_daemon_memory" : "1024"
+        }
+      }
+    },
+    {
+      "spark-defaults" : {
+        "properties" : {
+          "spark.sql.session.timeZone" : "Asia/Shanghai",
+          "spark.sql.extensions" : "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
+          "spark.sql.catalogImplementation" : "in-memory",
+          "spark.sql.catalog.iceberg.type" : "hadoop",
+          "spark.executorEnv.JAVA_HOME" : "/usr/lib/jvm/java-17-openjdk",
+          "spark.sql.catalog.iceberg" : "org.apache.iceberg.spark.SparkCatalog",
+          "spark.sql.catalog.iceberg.warehouse" : "hdfs://qixuandata/iceberg-warehouse-ha",
+          "spark.hadoop.fs.defaultFS" : "hdfs://qixuandata",
+          "spark.yarn.appMasterEnv.JAVA_HOME" : "/usr/lib/jvm/java-17-openjdk"
+        }
+      }
+    },
+    {
+      "ranger-hive-security" : {
+        "properties" : {
+          "ranger.plugin.hive.policy.rest.url" : "http://bigtop-hostname0.bigtop.apache.org:6080"
+        }
+      }
+    }
+  ],
+  "host_groups" : [
+    {
+      "components" : [
+        {
+          "name" : "NODEMANAGER"
+        },
+        {
+          "name" : "SPARK_CLIENT"
+        },
+        {
+          "name" : "YARN_CLIENT"
+        },
+        {
+          "name" : "HDFS_CLIENT"
+        },
+        {
+          "name" : "INFRA_SOLR_CLIENT"
+        },
+        {
+          "name" : "HIVE_METASTORE"
+        },
+        {
+          "name" : "TEZ_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name" : "HCAT"
+        },
+        {
+          "name" : "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_SERVER"
+        },
+        {
+          "name" : "DATANODE"
+        },
+        {
+          "name" : "HBASE_CLIENT"
+        },
+        {
+          "name" : "JOURNALNODE"
+        },
+        {
+          "name" : "FLINK_CLIENT"
+        },
+        {
+          "name" : "SPARK_THRIFTSERVER"
+        },
+        {
+          "name" : "APP_TIMELINE_SERVER"
+        },
+        {
+          "name" : "HIVE_CLIENT"
+        }
+      ],
+      "name" : "host_group_2",
+      "cardinality" : "1"
+    },
+    {
+      "components" : [
+        {
+          "name" : "ZKFC"
+        },
+        {
+          "name" : "FLINK_HISTORYSERVER"
+        },
+        {
+          "name" : "HIVE_SERVER"
+        },
+        {
+          "name" : "INFRA_SOLR_CLIENT"
+        },
+        {
+          "name" : "HBASE_MASTER"
+        },
+        {
+          "name" : "HIVE_METASTORE"
+        },
+        {
+          "name" : "TEZ_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name" : "WEBHCAT_SERVER"
+        },
+        {
+          "name" : "KAFKA_BROKER"
+        },
+        {
+          "name" : "RANGER_ADMIN"
+        },
+        {
+          "name" : "ZOOKEEPER_SERVER"
+        },
+        {
+          "name" : "JOURNALNODE"
+        },
+        {
+          "name" : "YARN_CLIENT"
+        },
+        {
+          "name" : "HDFS_CLIENT"
+        },
+        {
+          "name" : "HISTORYSERVER"
+        },
+        {
+          "name" : "NAMENODE"
+        },
+        {
+          "name" : "YARN_REGISTRY_DNS"
+        },
+        {
+          "name" : "TIMELINE_READER"
+        },
+        {
+          "name" : "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name" : "AMBARI_SERVER"
+        },
+        {
+          "name" : "HBASE_CLIENT"
+        },
+        {
+          "name" : "INFRA_SOLR"
+        },
+        {
+          "name" : "FLINK_JOBMANAGER"
+        },
+        {
+          "name" : "RANGER_USERSYNC"
+        },
+        {
+          "name" : "SPARK_JOBHISTORYSERVER"
+        },
+        {
+          "name" : "HIVE_CLIENT"
+        },
+        {
+          "name" : "RANGER_KMS_SERVER"
+        },
+        {
+          "name" : "RESOURCEMANAGER"
+        }
+      ],
+      "name" : "host_group_1",
+      "cardinality" : "1"
+    },
+    {
+      "components" : [
+        {
+          "name" : "NODEMANAGER"
+        },
+        {
+          "name" : "RANGER_TAGSYNC"
+        },
+        {
+          "name" : "SPARK_CLIENT"
+        },
+        {
+          "name" : "YARN_CLIENT"
+        },
+        {
+          "name" : "HDFS_CLIENT"
+        },
+        {
+          "name" : "ZKFC"
+        },
+        {
+          "name" : "HIVE_SERVER"
+        },
+        {
+          "name" : "ROUTER"
+        },
+        {
+          "name" : "FLINK_TASKMANAGER"
+        },
+        {
+          "name" : "INFRA_SOLR_CLIENT"
+        },
+        {
+          "name" : "NAMENODE"
+        },
+        {
+          "name" : "TEZ_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name" : "HCAT"
+        },
+        {
+          "name" : "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name" : "HBASE_REGIONSERVER"
+        },
+        {
+          "name" : "DATANODE"
+        },
+        {
+          "name" : "HBASE_CLIENT"
+        },
+        {
+          "name" : "JOURNALNODE"
+        },
+        {
+          "name" : "FLINK_CLIENT"
+        },
+        {
+          "name" : "HIVE_CLIENT"
+        }
+      ],
+      "name" : "host_group_4",
+      "cardinality" : "1"
+    },
+    {
+      "components" : [
+        {
+          "name" : "NODEMANAGER"
+        },
+        {
+          "name" : "SPARK_CLIENT"
+        },
+        {
+          "name" : "YARN_CLIENT"
+        },
+        {
+          "name" : "HDFS_CLIENT"
+        },
+        {
+          "name" : "FLINK_TASKMANAGER"
+        },
+        {
+          "name" : "INFRA_SOLR_CLIENT"
+        },
+        {
+          "name" : "TEZ_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name" : "HCAT"
+        },
+        {
+          "name" : "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_SERVER"
+        },
+        {
+          "name" : "DATANODE"
+        },
+        {
+          "name" : "HBASE_CLIENT"
+        },
+        {
+          "name" : "FLINK_CLIENT"
+        },
+        {
+          "name" : "HIVE_CLIENT"
+        }
+      ],
+      "name" : "host_group_3",
+      "cardinality" : "1"
+    }
+  ],
+  "Blueprints" : {
+    "stack_name" : "BIGTOP",
+    "stack_version" : "3.5.0"
+  }
+}

@@ -1,0 +1,147 @@
+# HodoopForge - 专为现代Hadoop集群量身打造的一站式部署与管理平台
+# Forge Stability. Connect the Future.
+# Project: HodoopForge - Ambari 3.x + Bigtop 3.5.0 Integration Platform
+#
+# 重要：本文件只定义容器拓扑，不是可直接重建的镜像基线。
+#   - 基础镜像 bigtop/puppet 不包含本集群安装的 Bigtop/Ambari 软件；
+#     直接 docker compose up 会创建“空容器”，不是恢复现有集群。
+#   - 运行中的集群禁止执行 docker compose up/down/restart；
+#     容器内 HDFS/MySQL/Kafka/ZK 数据也不在卷上，重建会丢数据。
+#   - 日常开机恢复由宿主机 hodoopforge-containers.service 执行 `docker start`。
+#   - 真正重建需要：已提交的节点镜像（docker commit）或重新执行安装；
+#     资源变更请用 `docker update`（不重建），并同步修改本文件。
+services:
+  bigtop_hostname0:
+    command: /sbin/init
+    hostname: bigtop_hostname0
+    container_name: bigtop_hostname0
+    domainname: bigtop.apache.org
+    image: bigtop/puppet:trunk-rockylinux-8
+    # 2026-10-26: 16g -> 20g。h0 承载 Ambari Server/NN/RM/HMaster/Hive/Ranger/Solr 等，
+    # 原 16g 长期贴限（14.4g/16g），JVM 停顿曾引发 ZK 会话过期与全栈 Abort。
+    mem_limit: 20g
+    mem_swappiness: 1
+    restart: unless-stopped
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f AmbariAgent.py >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 180s
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "5"
+    ports:
+      - "20609:8080"
+    privileged: true
+    networks:
+      hodoopforge:
+        ipv4_address: 172.19.0.2
+    volumes:
+      - ./ambari-repo:/var/repo/ambari
+      - ../ambarirpm:/var/repo/ambarirpm:ro
+      - ../bigtoprpm:/var/repo/bigtoprpm:ro
+      - ./conf/hosts:/etc/hosts
+
+  bigtop_hostname1:
+    command: /sbin/init
+    hostname: bigtop_hostname1
+    container_name: bigtop_hostname1
+    domainname: bigtop.apache.org
+    image: bigtop/puppet:trunk-rockylinux-8
+    # 2026-11-22: 8g -> 10g（Flink JM2 / HMS / 监控 / Spark ThriftServer）。
+    mem_limit: 10g
+    mem_swappiness: 1
+    restart: unless-stopped
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f AmbariAgent.py >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 180s
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "5"
+    privileged: true
+    networks:
+      hodoopforge:
+        ipv4_address: 172.19.0.5
+    volumes:
+      - ./ambari-repo:/var/repo/ambari
+      - ./conf/hosts:/etc/hosts
+
+  bigtop_hostname2:
+    command: /sbin/init
+    hostname: bigtop_hostname2
+    container_name: bigtop_hostname2
+    domainname: bigtop.apache.org
+    image: bigtop/puppet:trunk-rockylinux-8
+    # 2026-11-22: 7g -> 9g（Kafka 1002 / Flink TM / Prometheus 备）。
+    mem_limit: 9g
+    mem_swappiness: 1
+    restart: unless-stopped
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f AmbariAgent.py >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 180s
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "5"
+    privileged: true
+    networks:
+      hodoopforge:
+        ipv4_address: 172.19.0.3
+    volumes:
+      - ./ambari-repo:/var/repo/ambari
+      - ./conf/hosts:/etc/hosts
+
+  bigtop_hostname3:
+    command: /sbin/init
+    hostname: bigtop_hostname3
+    container_name: bigtop_hostname3
+    domainname: bigtop.apache.org
+    image: bigtop/puppet:trunk-rockylinux-8
+    # 2026-11-24: 9g -> 10g（NN2 / HBase RS / Kafka 1003 / HS2 / MySQL 副本 / KDC）。
+    mem_limit: 10g
+    mem_swappiness: 1
+    restart: unless-stopped
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f AmbariAgent.py >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 180s
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "5"
+    privileged: true
+    networks:
+      hodoopforge:
+        ipv4_address: 172.19.0.4
+    volumes:
+      - ./ambari-repo:/var/repo/ambari
+      - ./conf/hosts:/etc/hosts
+
+# 固定网段：避免 Docker 随机分配导致 MySQL 授权不匹配
+# 每个容器绑定固定 IP，MySQL 授权基于 172.19.0.% 永久有效
+networks:
+  hodoopforge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1

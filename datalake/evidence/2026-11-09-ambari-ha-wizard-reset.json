@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-09",
+  "issue": "BUG-047",
+  "symptom": "Ambari login redirects to #/main/services/highAvailability/NameNode/enable/step9 even from a clean browser or a clean machine",
+  "root_cause": {
+    "source": "Ambari per-user persisted preference",
+    "endpoint": "/api/v1/persist/CLUSTER_CURRENT_STATUS",
+    "before": {
+      "clusterState": "HIGH_AVAILABILITY_DEPLOY",
+      "wizardControllerName": "highAvailabilityWizardController",
+      "localdb.HighAvailabilityWizard.currentStep": "9"
+    }
+  },
+  "fix": {
+    "clusterState": "CLUSTER_INSTALLED_4",
+    "wizardControllerName": null,
+    "wizard_data": "cleared (set to null)",
+    "caveat": "Close any browser tab still on step9 before resetting; an open wizard tab can re-save the stale state.",
+    "script": "scripts/ambari_reset_ha_wizard.sh",
+    "does_not_change": [
+      "HDFS configuration",
+      "HA deployment",
+      "service states",
+      "Ambari requests"
+    ]
+  },
+  "verification": {
+    "root_url": "http://localhost:20609/",
+    "landed_on": "#/main/dashboard/metrics",
+    "services_url": "http://localhost:20609/#/main/services",
+    "landed_on_services": "#/main/services/HDFS/summary",
+    "modal": false
+  },
+  "ha_state": {
+    "namenode_active": "bigtop-hostname0.bigtop.apache.org",
+    "namenode_standby": "bigtop-hostname3.bigtop.apache.org",
+    "namenode_count": 2,
+    "zkfc_count": 2,
+    "journalnode_live": 3,
+    "secondary_namenode": "removed",
+    "unfinished_requests": 0
+  }
+}

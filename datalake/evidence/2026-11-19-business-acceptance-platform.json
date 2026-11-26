@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-11-19T00:06:15",
+  "scope": "platform-side verification (business probe API not running on this host)",
+  "hdfs_ha": {
+    "active": "bigtop-hostname0.bigtop.apache.org:8020",
+    "standby": "bigtop-hostname3.bigtop.apache.org:8020",
+    "failover": "nn2 -> nn1 successful"
+  },
+  "warehouse": {
+    "catalog_warehouse": "hdfs://qixuandata/iceberg-warehouse-ha",
+    "dwd_courses_location": "hdfs://qixuandata/iceberg-warehouse-ha/edulake_learning/dwd_courses",
+    "note": "HA nameservice; '-ha' suffix avoids conflict with legacy /iceberg-warehouse"
+  },
+  "meta_tables": {
+    "asset_registry": 376,
+    "data_quality_check": 391,
+    "data_lineage": 964,
+    "cost_daily": 308,
+    "governance_action_log": 12,
+    "rag_answer_samples": 21
+  },
+  "dwd_courses": {
+    "readable": true,
+    "rows": 4,
+    "max_dt": "2026-11-08"
+  },
+  "flink": {
+    "job_id": "42c0fdb46751781c640b17be70550b9b",
+    "state": "RUNNING",
+    "checkpoint_interval_seconds": 20,
+    "last_30min": {
+      "completed": 10,
+      "failed": 0
+    },
+    "consumer_lag": {
+      "edulake_flink_ai_v3": 0,
+      "edulake_flink_rag_v3": 0,
+      "edulake_flink_answer_v1": 0
+    }
+  },
+  "probe": {
+    "sent_at": "2026-11-19T00:00:11",
+    "visible_at": "2026-11-19T00:00:55",
+    "latency_seconds": 44,
+    "rows": {
+      "ods_llm_inference_log": 1,
+      "ods_rag_query_log": 1,
+      "rag_answer_samples": 1
+    }
+  },
+  "streaming_freshness": {
+    "ods_llm_max_request_at": "2026-11-18 23:59:51.28",
+    "ods_rag_max_request_at": "2026-11-18 23:59:51.28",
+    "rag_answer_samples_max_request_at": "2026-11-18 23:59:51.28"
+  },
+  "business_probe": {
+    "endpoint": "http://127.0.0.1:12393/api/teaching/analytics/ops/",
+    "reachable": false,
+    "note": "business app not running on platform host; lake-health.available / freshness.status must be produced by app side"
+  }
+}

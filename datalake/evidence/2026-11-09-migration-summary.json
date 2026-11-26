@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-09",
+  "hdfs_ha": {
+    "namenode_1": "bigtop-hostname0 active",
+    "namenode_2": "bigtop-hostname3 standby",
+    "journalnodes": ["bigtop-hostname0", "bigtop-hostname1", "bigtop-hostname3"],
+    "zkfc": ["bigtop-hostname0", "bigtop-hostname3"],
+    "nameservice": "hdfs://qixuandata"
+  },
+  "migration": {
+    "old_base": "hdfs://bigtop-hostname0.bigtop.apache.org:8020/iceberg-warehouse",
+    "new_base": "hdfs://qixuandata/iceberg-warehouse-ha",
+    "old_tables": 70,
+    "new_tables": 70,
+    "mismatch": 0,
+    "missing": [],
+    "old_warehouse_untouched": true
+  },
+  "flink": {
+    "job_id": "bbf6360dfddf6592aa04fcf56e10faa8",
+    "state": "RUNNING",
+    "sources": 3,
+    "sinks": 3,
+    "checkpoint_interval_ms": 20000,
+    "checkpoint_completed": 7,
+    "checkpoint_failed": 0,
+    "warehouse": "hdfs://qixuandata/iceberg-warehouse-ha",
+    "checkpoint_dir": "hdfs://qixuandata/flink-checkpoints/edulake"
+  },
+  "e2e_probe": {
+    "session_id": "post_fix_1794210460514",
+    "first_visible_seconds": 19,
+    "oldice_rows": 0,
+    "newice_rows": 1
+  },
+  "kafka": {
+    "brokers": 3,
+    "rf3_topics": 9
+  }
+}

@@ -1,0 +1,46 @@
+# Qixuan CloudBuild pipeline deployed to https://as.long.kim:12131
+# project: otowyue_ops_hadoop_ci (prj_7efee1f4e086473997b7d781fac6cf94)
+#
+# The platform cannot `git clone` the 167 MB private repository, so this
+# pipeline downloads the sanitized public mirror tarball written by
+# scripts/sync_ci_mirror.sh and runs the unit suite from it.
+#
+# Keep in sync with the project pipeline in the platform UI:
+#   PUT /api/v1/projects/<project>/pipeline  {"yaml": "..."}
+version: '1.0'
+project:
+  name: otowyue_ops_hadoop_ci
+  runtime: python
+  version: '3.11'
+trigger:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+runner:
+  type: linux
+  image: ubuntu-24.04
+  cpu: 2
+  memory: 4Gi
+  timeout: 30m
+stages: [source, test]
+jobs:
+  test:
+    stage: test
+    commands:
+      # raw.githubusercontent is primary; codeload archive is the fallback.
+      # codeload occasionally drops HTTP/2 streams, hence retry flags.
+      - (curl -fsSL --http1.1 --retry 5 --retry-delay 3 --retry-all-errors --max-time 180 -o /tmp/hf-repo.tar.gz https://raw.githubusercontent.com/starkernel/otowyue_ops_hadoop_ci_min/master/mirror.tar.gz || curl -L --fail --http1.1 --retry 5 --retry-delay 3 --retry-all-errors --max-time 180 -o /tmp/hf-repo.tar.gz https://codeload.github.com/starkernel/otowyue_ops_hadoop_ci_min/tar.gz/refs/heads/master)
+      - mkdir -p /tmp/hf && tar xzf /tmp/hf-repo.tar.gz -C /tmp/hf --strip-components=1
+      - cd /tmp/hf && python3 -m pip install --no-input -q pytest PyYAML loguru requests
+      - cd /tmp/hf && python3 -m pytest -q tests/unit --junitxml=reports/junit.xml
+      # Artifacts are resolved relative to the (sample) workspace, not /tmp/hf.
+      - mkdir -p reports && cp /tmp/hf/reports/junit.xml reports/junit.xml
+    artifacts:
+      paths:
+        - reports/junit.xml
+deploy:
+  enabled: false
+  environment: staging
+  when: branch == "master"
+  commands: []

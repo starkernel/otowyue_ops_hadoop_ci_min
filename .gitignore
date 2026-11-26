@@ -1,0 +1,21 @@
+*.pub
+*.rpm
+ambarirpm/
+bigtoprpm/
+ambari3/ambari-repo/*.rpm
+ambari3/ambari-repo/repodata/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Test / CI artifacts
+reports/
+allure-results/
+allure-report/
+allure-history/
+.pytest_cache/
+.coverage
+coverage.xml
+.venv-ci/
